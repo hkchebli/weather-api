@@ -1,0 +1,30 @@
+*{
+    font-family: 'Caveat Brush', cursive;
+    font-size: 18px;
+}
+#weatherOutlook {
+    position: absolute;
+    left: -3%;
+}
+
+h1,h2 {
+    font-size: 70px;
+    font-weight: 400;
+    margin-bottom: 2%;
+    background-color:#313131;
+    color:#fa6914;
+}
+body{
+    background-color:#313131;
+}
+h4{
+    color: #fa6914;
+}
+.card{
+    background-color: #fa6914;
+}
+.btn{
+    background-color: #fa6914;
+    border-color: black;
+}
+

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+    <title>Weather Project</title>
+</head>
+
+<body>
+    <header class="container-fluid text-center text-white bg-dark p-2">
+        <h1>LET'S CHECK THE WEATHER !</h1>
+        <h2 id="currentDay" class="lead"></h2>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <aside class="col-lg-3 bg-dark">
+                <h5 class="mt-1">How cold is it in: __________?</h5>
+                <div class="form-inline form-group">
+                    <input class="form-control" type="text" id="search-value" />
+                    <button class="btn btn-primary" id="search-button"> <i class="fa fa-search"></i> </button>
+                </div>
+
+                <ul class="list-group searchedHistory "></ul>
+            </aside>
+
+            <div class="col-lg-9">
+                <div id="today" class="mt-3"></div>
+                <div id="weatherForecast" class="card-deck mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+        integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>
