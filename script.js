@@ -1,7 +1,7 @@
-var today=dayjs();
+var today = dayjs();
 $("#search-value").val("enter a city here");
 $(document).ready(function () {
- 
+
   var APIcode = "9c44d08aed7ea854fb73e65b38175b5b";
 
   $('#currentDay').text(today.format('dddd, MMMM D YYYY'));
@@ -12,7 +12,7 @@ $(document).ready(function () {
 
   //search button feature
   $("#search-button").on("click", function () {
-    
+
     var searchTerm = $("#search-value").val();
 
     weatherFunction(searchTerm);
@@ -85,32 +85,22 @@ $(document).ready(function () {
       var lon = data.coord.lon;
       var lat = data.coord.lat;
 
-      $.ajax({
-        type: "GET",
-        url: "https://api.openweathermap.org/data/2.5/uvi?appid=" + APIcode + "&lat=" + lat + "&lon=" + lon,
 
+      fetch("https://api.openweathermap.org/data/2.5/uvi?appid=" + APIcode + "&lat=" + lat + "&lon=" + lon, {
+        method: 'GET', //GET is the default.
+        credentials: 'same-origin', // include, *same-origin, omit
+        redirect: 'follow', // manual, *follow, error
+      })
+        .then(function (response) {
+          //return response.json();
+          var uvIndex = $("<p>").addClass("card-text").text("UV Index: " + response.value);
+          cardBody.append(uvIndex);
+          $("#today .card-body").append(uvIndex.append(btn));
 
-      }).then(function (response) {
-        console.log(response);
-
-        var uvColor;
-        //var uvResponse = response.value;
-        var uvIndex = $("<p>").addClass("card-text").text("UV Index: " + response.value);
-        //var btn = $("<span>").addClass("btn btn-sm").text(uvResponse);
-
-
-        /* if (uvResponse < 3) {
-           btn.addClass("btn-success");
-         } else if (uvResponse < 7) {
-           btn.addClass("btn-warning");
-         } else {
-           btn.addClass("btn-danger");
-         }*/
-
-        cardBody.append(uvIndex);
-        $("#today .card-body").append(uvIndex.append(btn));
-
-      });
+        })
+        .then(function (data) {
+          console.log(data);
+        });
 
       // merge and add to page
       title.append(img);
@@ -122,35 +112,41 @@ $(document).ready(function () {
   }
   // function weatherForecast(searchTerm) 
   function weatherForecast(searchTerm) {
-    $.ajax({
-      type: "GET",
-      url: "https://api.openweathermap.org/data/2.5/forecast?q=" + searchTerm + "&appid=" + APIcode + "&units=imperial",
 
-    }).then(function (data) {
-      console.log(data);
-      $("#weatherForecast").html("<h4 class=\"mt-3\">5-Day Forecast:</h4>").append("<div class=\"row\">");
+    fetch("https://api.openweathermap.org/data/2.5/forecast?q=" + searchTerm + "&appid=" + APIcode + "&units=imperial", {
+      method: 'GET', //GET is the default.
+      credentials: 'same-origin', // include, *same-origin, omit
+      redirect: 'follow', // manual, *follow, error
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        console.log(data);
+        $("#weatherForecast").html("<h4 class=\"mt-3\">5-Day Forecast:</h4>").append("<div class=\"row\">");
+        for (var i = 0; i < data.list.length; i++) {
 
-      //loop to create a new card for 5 days pull data image from search
-      for (var i = 0; i < data.list.length; i++) {
+          if (data.list[i].dt_txt.indexOf("15:00:00") !== -1) {
 
-        if (data.list[i].dt_txt.indexOf("15:00:00") !== -1) {
+            var titleFive = $("<h3>").addClass("card-title").text(new Date(data.list[i].dt_txt).toLocaleDateString());
+            var imgFive = $("<img>").attr("src", "https://openweathermap.org/img/w/" + data.list[i].weather[0].icon + ".png");
+            var colFive = $("<div>").addClass("col-md-2.5");
+            var cardFive = $("<div>").addClass("card bg-orange text-black");
+            var cardBodyFive = $("<div>").addClass("card-body p-2");
+            var humidFive = $("<p>").addClass("card-text").text("Humidity: " + data.list[i].main.humidity + "%");
+            var tempFive = $("<p>").addClass("card-text").text("Temperature: " + Math.trunc(data.list[i].main.temp) + " °F");
+            var windfive = $("<p>").addClass("card-text").text("Wind Speed: " + data.list[i].wind.speed + " MPH");
 
-          var titleFive = $("<h3>").addClass("card-title").text(new Date(data.list[i].dt_txt).toLocaleDateString());
-          var imgFive = $("<img>").attr("src", "https://openweathermap.org/img/w/" + data.list[i].weather[0].icon + ".png");
-          var colFive = $("<div>").addClass("col-md-2.5");
-          var cardFive = $("<div>").addClass("card bg-orange text-black");
-          var cardBodyFive = $("<div>").addClass("card-body p-2");
-          var humidFive = $("<p>").addClass("card-text").text("Humidity: " + data.list[i].main.humidity + "%");
-          var tempFive = $("<p>").addClass("card-text").text("Temperature: " + Math.trunc(data.list[i].main.temp) + " °F");
-          var windfive = $("<p>").addClass("card-text").text("Wind Speed: " + data.list[i].wind.speed + " MPH");
-
-          //merge together and put on page
-          colFive.append(cardFive.append(cardBodyFive.append(titleFive, imgFive, tempFive, humidFive, windfive)));
-          //append card to column, body to card, and other elements to body
-          $("#weatherForecast .row").append(colFive);
+            //merge together and put on page
+            colFive.append(cardFive.append(cardBodyFive.append(titleFive, imgFive, tempFive, humidFive, windfive)));
+            //append card to column, body to card, and other elements to body
+            $("#weatherForecast .row").append(colFive);
+          }
         }
-      }
-    });
+
+      });
+
+
   }
 
 });
