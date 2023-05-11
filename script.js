@@ -54,11 +54,13 @@ $(document).ready(function () {
   });
 
   function weatherFunction(searchTerm) {
+    fetch("https://api.openweathermap.org/data/2.5/weather?q=" + searchTerm + "&appid=" + APIcode, {
+      method: 'GET', //GET is the default.
+      credentials: 'same-origin', // include, *same-origin, omit
+      redirect: 'follow', // manual, *follow, error
 
-    $.ajax({
-      type: "GET",
-      url: "https://api.openweathermap.org/data/2.5/weather?q=" + searchTerm + "&appid=" + APIcode,
-
+    }).then(function (response) {
+      return response.json();
 
     }).then(function (data) {
       //if index of search value does not exist
@@ -82,20 +84,19 @@ $(document).ready(function () {
       var humid = $("<p>").addClass("card-text").text("Humidity: " + data.main.humidity + " %");
       var temp = $("<p>").addClass("card-text").text("Temperature: " + Math.trunc((1.8 * (data.main.temp - 273)) + 32) + " °F");
       console.log(data)
-      var lon = data.coord.lon;
-      var lat = data.coord.lat;
+      var longitude = data.coord.lon;
+      var latitude = data.coord.lat;
 
 
-      fetch("https://api.openweathermap.org/data/2.5/uvi?appid=" + APIcode + "&lat=" + lat + "&lon=" + lon, {
+      fetch("https://api.openweathermap.org/data/2.5/uvi?appid=" + APIcode + "&lat=" + latitude + "&lon=" + longitude, {
         method: 'GET', //GET is the default.
         credentials: 'same-origin', // include, *same-origin, omit
         redirect: 'follow', // manual, *follow, error
       })
         .then(function (response) {
-          //return response.json();
           var uvIndex = $("<p>").addClass("card-text").text("UV Index: " + response.value);
           cardBody.append(uvIndex);
-          $("#today .card-body").append(uvIndex.append(btn));
+          $("#today .card-body").append(uvIndex);
 
         })
         .then(function (data) {
@@ -128,19 +129,19 @@ $(document).ready(function () {
 
           if (data.list[i].dt_txt.indexOf("15:00:00") !== -1) {
 
-            var titleFive = $("<h3>").addClass("card-title").text(new Date(data.list[i].dt_txt).toLocaleDateString());
-            var imgFive = $("<img>").attr("src", "https://openweathermap.org/img/w/" + data.list[i].weather[0].icon + ".png");
-            var colFive = $("<div>").addClass("col-md-2.5");
-            var cardFive = $("<div>").addClass("card bg-orange text-black");
-            var cardBodyFive = $("<div>").addClass("card-body p-2");
-            var humidFive = $("<p>").addClass("card-text").text("Humidity: " + data.list[i].main.humidity + "%");
-            var tempFive = $("<p>").addClass("card-text").text("Temperature: " + Math.trunc(data.list[i].main.temp) + " °F");
-            var windfive = $("<p>").addClass("card-text").text("Wind Speed: " + data.list[i].wind.speed + " MPH");
+            var titles = $("<h3>").addClass("card-title").text(new Date(data.list[i].dt_txt).toLocaleDateString());
+            var images = $("<img>").attr("src", "https://openweathermap.org/img/w/" + data.list[i].weather[0].icon + ".png");
+            var cols = $("<div>").addClass("col-md-2.5");
+            var cards = $("<div>").addClass("card bg-orange text-black");
+            var cardBody = $("<div>").addClass("card-body p-2");
+            var humidities = $("<p>").addClass("card-text").text("Humidity: " + data.list[i].main.humidity + "%");
+            var temps = $("<p>").addClass("card-text").text("Temperature: " + Math.trunc(data.list[i].main.temp) + " °F");
+            var winds = $("<p>").addClass("card-text").text("Wind Speed: " + data.list[i].wind.speed + " MPH");
 
             //merge together and put on page
-            colFive.append(cardFive.append(cardBodyFive.append(titleFive, imgFive, tempFive, humidFive, windfive)));
+            cols.append(cards.append(cardBody.append(titles, images, temps, humidities, winds)));
             //append card to column, body to card, and other elements to body
-            $("#weatherForecast .row").append(colFive);
+            $("#weatherForecast .row").append(cols);
           }
         }
 
